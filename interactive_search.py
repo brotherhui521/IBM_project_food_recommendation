@@ -3,6 +3,8 @@ from shared_functions import *
 # Global variable to store loaded food items
 food_items = []
 
+search_history=[]
+
 def main():
     """Main function for interactive CLI food recommendation system"""
     try:
@@ -10,6 +12,7 @@ def main():
         print("=" * 50)
         print("Loading food database...")
         
+        global search_history
         # Load food data from file
         global food_items
         food_items = load_food_data('./FoodDataSet.json')
@@ -37,6 +40,7 @@ def interactive_food_chatbot(collection):
     print("  • Type any food name or description to search")
     print("  • 'help' - Show available commands")
     print("  • 'quit' or 'exit' - Exit the system")
+    print("  • 'history' - Show th esearch history")
     print("  • Ctrl+C - Emergency exit")
     print("-" * 50)
     
@@ -59,6 +63,9 @@ def interactive_food_chatbot(collection):
             # Handle help command
             elif user_input.lower() in ['help', 'h']:
                 show_help_menu()
+
+            elif user_input.lower() =='history':
+                show_search_history()
             
             # Handle food search
             else:
@@ -99,6 +106,9 @@ def handle_food_search(collection, query):
         print("   • Ingredients: 'chicken', 'vegetables', 'cheese'")
         print("   • Descriptors: 'spicy', 'sweet', 'healthy'")
         return
+
+    # add to search_history
+    search_history.append({query:results})
     
     # Display results with rich formatting
     print(f"\n✅ Found {len(results)} recommendations:")
@@ -141,6 +151,17 @@ def suggest_related_searches(results):
         print("   • Try 'low calorie' for lighter options")
     else:
         print("   • Try 'hearty meal' for more substantial dishes")
+
+def show_search_history():
+    """Display user's search history"""
+    if not search_history:
+        print("📝 No search history available")
+        return
+    
+    print("\n📝 Your Search History:")
+    print("-" * 30)
+    for i, search in enumerate(search_history[-10:], 1):  # Show last 10
+        print(f"{i}. {search}")
 
 if __name__ == "__main__":
     main()
